@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0e14">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Quire Desktop — User Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e14;
+            --card: rgba(255, 255, 255, 0.035);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text: #e6edf3;
+            --text-dim: #9aa7b4;
+            --text-faint: #6b7785;
+            --green: #22c55e;
+            --green-bright: #4ade80;
+            --emerald: #10b981;
+            --amber: #fbbf24;
+            --red: #f87171;
+            --radius: 18px;
+            --maxw: 1000px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 150px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(55% 45% at 80% -5%, rgba(34, 197, 94, 0.14), transparent 60%),
+                radial-gradient(45% 45% at 5% 8%, rgba(16, 185, 129, 0.09), transparent 60%);
+            pointer-events: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header (matches landing) */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: saturate(140%) blur(14px);
+            background: rgba(10, 14, 20, 0.6);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 66px;
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.12rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand .mark {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--green) 0%, var(--emerald) 100%);
+            display: grid;
+            place-items: center;
+            color: #052e16;
+            font-weight: 900;
+            font-size: 1.05rem;
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.35);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-right a.link {
+            color: var(--text-dim);
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: color 0.18s;
+        }
+
+        .nav-right a.link:hover {
+            color: var(--text);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--green) 0%, var(--emerald) 100%);
+            color: #052e16;
+            padding: 9px 18px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border-radius: 999px;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.28);
+            transition: transform 0.18s, box-shadow 0.18s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 40px rgba(34, 197, 94, 0.42);
+        }
+
+        /* Doc hero */
+        .doc-hero {
+            text-align: center;
+            padding: 70px 24px 34px;
+        }
+
+        .doc-hero .eyebrow {
+            color: var(--green-bright);
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .doc-hero h1 {
+            font-size: clamp(2.1rem, 5vw, 3.2rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.08;
+            margin-bottom: 16px;
+        }
+
+        .doc-hero h1 .grad {
+            background: linear-gradient(115deg, var(--green-bright), var(--emerald) 60%, #2dd4bf);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .doc-hero p {
+            color: var(--text-dim);
+            font-size: 1.08rem;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        /* Sticky section nav */
+        .toc {
+            position: sticky;
+            top: 66px;
+            z-index: 40;
+            backdrop-filter: saturate(140%) blur(14px);
+            background: rgba(10, 14, 20, 0.72);
+            border-top: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+            margin-top: 28px;
+        }
+
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            max-width: var(--maxw);
+            margin: 0 auto;
+        }
+
+        .toc a {
+            display: block;
+            padding: 7px 15px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-dim);
+            border: 1px solid transparent;
+            transition: all 0.18s;
+        }
+
+        .toc a:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .toc a.active {
+            color: var(--green-bright);
+            background: rgba(34, 197, 94, 0.12);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        /* Sections */
+        main {
+            padding: 44px 0 30px;
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            padding: 40px;
+            margin-bottom: 24px;
+            scroll-margin-top: 150px;
+        }
+
+        .section > h2 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 22px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section h3 {
+            color: var(--green-bright);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 30px 0 12px;
+        }
+
+        .section h3:first-of-type {
+            margin-top: 0;
+        }
+
+        .section h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 18px 0 8px;
+        }
+
+        .section p {
+            color: var(--text-dim);
+            margin-bottom: 13px;
+        }
+
+        .section ul,
+        .section ol {
+            margin: 0 0 16px 22px;
+            color: var(--text-dim);
+        }
+
+        .section li {
+            margin-bottom: 8px;
+        }
+
+        .section li::marker {
+            color: var(--green);
+        }
+
+        .section strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        code {
+            background: rgba(34, 197, 94, 0.10);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.86em;
+            color: var(--green-bright);
+        }
+
+        /* Feature cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin: 22px 0 8px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--card-border);
+            border-left: 3px solid var(--green);
+            border-radius: 14px;
+            padding: 22px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            border-left-color: var(--green-bright);
+        }
+
+        .feature-card h4 {
+            color: var(--green-bright);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .feature-card ul {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            margin-bottom: 10px;
+        }
+
+        /* Callout boxes */
+        .tip-box,
+        .warning-box {
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin: 20px 0;
+            color: var(--text-dim);
+            font-size: 0.97rem;
+        }
+
+        .tip-box {
+            background: rgba(34, 197, 94, 0.07);
+            border: 1px solid rgba(34, 197, 94, 0.22);
+            border-left: 3px solid var(--green);
+        }
+
+        .tip-box strong {
+            color: var(--green-bright);
+        }
+
+        .warning-box {
+            background: rgba(251, 191, 36, 0.06);
+            border: 1px solid rgba(251, 191, 36, 0.22);
+            border-left: 3px solid var(--amber);
+        }
+
+        .warning-box strong {
+            color: var(--amber);
+        }
+
+        /* Keyboard keys */
+        .keyboard-key {
+            display: inline-block;
+            background: #11161f;
+            border: 1px solid var(--card-border);
+            border-bottom-width: 2px;
+            color: var(--text);
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-family: 'Consolas', monospace;
+            font-weight: 600;
+        }
+
+        .emoji {
+            margin-right: 6px;
+        }
+
+        .dot-green { color: var(--green-bright); }
+        .dot-amber { color: var(--amber); }
+        .dot-red { color: var(--red); }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding: 40px 0 54px;
+            margin-top: 24px;
+            text-align: center;
+            color: var(--text-faint);
+        }
+
+        footer .links {
+            display: flex;
+            gap: 22px;
+            justify-content: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        footer .links a {
+            color: var(--text-dim);
+            font-size: 0.92rem;
+        }
+
+        footer .links a:hover {
+            color: var(--green-bright);
+        }
+
+        footer .disclaimer {
+            font-size: 0.82rem;
+            opacity: 0.85;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .nav-right a.link { display: none; }
+            .section { padding: 26px 22px; }
+            .toc { top: 66px; }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="nav">
+            <a href="index.html" class="brand">
+                <div class="mark">Q</div>
+                <span>Quire Desktop</span>
+            </a>
+            <div class="nav-right">
+                <a href="index.html" class="link">← Home</a>
+                <a href="index.html" class="btn-primary">Download</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="doc-hero">
+        <div class="container">
+            <div class="eyebrow">Documentation</div>
+            <h1>Quire Desktop <span class="grad">User Guide</span></h1>
+            <p>Everything you need to install, configure and get the most out of Quire Desktop.</p>
+        </div>
+    </section>
+
+    <nav class="toc">
+        <ul>
+            <li><a href="#getting-started">Getting Started</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#settings">Settings</a></li>
+            <li><a href="#tips">Tips &amp; Tricks</a></li>
+            <li><a href="#troubleshooting">Troubleshooting</a></li>
+            <li><a href="#privacy">Privacy</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="container">
+
+            <section id="getting-started" class="section">
+                <h2>🚀 Getting Started</h2>
+
+                <h3>Installation</h3>
+                <ol>
+                    <li><strong>Download the app</strong> from the download button on the home page</li>
+                    <li><strong>Install</strong> by running the setup file</li>
+                    <li><strong>Launch</strong> Quire Desktop from your desktop or Start menu</li>
+                    <li><strong>Sign in</strong> using the OAuth authorization when prompted</li>
+                </ol>
+
+                <h3>First-Time Setup</h3>
+                <p>When you first launch the app, you'll be taken through a simple setup:</p>
+                <ol>
+                    <li>Click <strong>“Authorize with Quire”</strong> in the welcome window</li>
+                    <li>Sign in to your Quire account in your browser</li>
+                    <li>Allow Quire Desktop to access your account</li>
+                    <li>The app will automatically sync your projects and tasks</li>
+                </ol>
+            </section>
+
+            <section id="features" class="section">
+                <h2>✨ Features</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><span class="emoji">🔔</span>Real-Time Notifications</h4>
+                        <p>Get instant desktop notifications for:</p>
+                        <ul>
+                            <li>Task assignments</li>
+                            <li>Comments on your tasks</li>
+                            <li>Due date reminders</li>
+                            <li>@mentions</li>
+                        </ul>
+                        <p><strong>Click any notification</strong> to jump directly to that task!</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">☀️</span>Morning Digest</h4>
+                        <p>Start your day right with:</p>
+                        <ul>
+                            <li>Daily summary at your chosen time</li>
+                            <li>All tasks due today</li>
+                            <li>Both all-day and timed tasks</li>
+                            <li>One-click access to Today view</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">⏰</span>Smart Reminders</h4>
+                        <ul>
+                            <li><strong>Due date reminders</strong>: 15 min before</li>
+                            <li><strong>Overdue notifications</strong>: Daily</li>
+                            <li><strong>Start date alerts</strong>: When to begin</li>
+                            <li><strong>Do Not Disturb</strong>: Set quiet hours</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">🖱️</span>System Tray Integration</h4>
+                        <p>The app runs quietly in your system tray:</p>
+                        <ul>
+                            <li><strong class="dot-green">●</strong> Green = Connected</li>
+                            <li><strong class="dot-amber">●</strong> Yellow = Connecting</li>
+                            <li><strong class="dot-red">●</strong> Red = Issue</li>
+                        </ul>
+                        <p>Right-click for quick menu access</p>
+                    </div>
+                </div>
+
+                <h3>Keyboard Shortcuts</h3>
+                <ul>
+                    <li><span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">Shift</span> + <span
+                            class="keyboard-key">Q</span> — Show/hide the app window</li>
+                    <li><span class="keyboard-key">F5</span> or <span class="keyboard-key">Ctrl</span> + <span
+                            class="keyboard-key">R</span> — Refresh the current view</li>
+                    <li><span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">Shift</span> + <span
+                            class="keyboard-key">R</span> — Force reload</li>
+                </ul>
+            </section>
+
+            <section id="settings" class="section">
+                <h2>⚙️ Settings &amp; Customization</h2>
+
+                <h3>Access Settings</h3>
+                <p>Click the <strong>gear icon</strong> in the tray menu or use the settings option to customize:</p>
+
+                <h3>Notification Preferences</h3>
+                <ul>
+                    <li><strong>Enable/disable</strong> specific notification types</li>
+                    <li><strong>Only my tasks</strong>: Filter to show only tasks assigned to you</li>
+                    <li><strong>Morning digest time</strong>: Set when you want your daily summary</li>
+                    <li><strong>Lead time</strong>: Choose when to get reminders (at time, 5 min, 15 min, 30 min, 1 hour
+                        before)</li>
+                    <li><strong>Overdue strategy</strong>: How often to remind about overdue tasks</li>
+                </ul>
+
+                <h3>Do Not Disturb</h3>
+                <p>Set quiet hours when you don't want to be interrupted:</p>
+                <ul>
+                    <li>Enable DND mode</li>
+                    <li>Set start time (e.g., 10:00 PM)</li>
+                    <li>Set end time (e.g., 8:00 AM)</li>
+                </ul>
+
+                <h3>General Settings</h3>
+                <ul>
+                    <li><strong>Start minimized</strong>: Launch the app in the system tray</li>
+                    <li><strong>Home URL</strong>: Set your default Quire workspace</li>
+                    <li><strong>Global shortcut</strong>: Customize the keyboard shortcut</li>
+                </ul>
+            </section>
+
+            <section id="tips" class="section">
+                <h2>💡 Tips &amp; Tricks</h2>
+
+                <div class="tip-box">
+                    <strong>💡 Quick Task Access</strong><br>
+                    Click any notification to instantly jump to that specific task. The app uses “soft navigation” — no
+                    page reloads needed!
+                </div>
+
+                <div class="tip-box">
+                    <strong>🎯 Staying Focused</strong><br>
+                    Use Do Not Disturb during deep work sessions. Customize notification types to reduce distractions.
+                </div>
+
+                <div class="tip-box">
+                    <strong>📊 Morning Routine</strong><br>
+                    Set your morning digest for when you start work to get a complete overview of your day.
+                </div>
+            </section>
+
+            <section id="troubleshooting" class="section">
+                <h2>🛠️ Troubleshooting</h2>
+
+                <h3>Not receiving notifications?</h3>
+                <ul>
+                    <li>Check that notifications are enabled in Settings</li>
+                    <li>Ensure Windows notifications are allowed for Quire Desktop</li>
+                    <li>Verify you're signed in (green dot in system tray)</li>
+                </ul>
+
+                <h3>App won't connect?</h3>
+                <ul>
+                    <li>Check your internet connection</li>
+                    <li>Try “Force Sync” from the tray menu</li>
+                    <li>Sign out and sign back in</li>
+                </ul>
+
+                <h3>Notifications not clicking through?</h3>
+                <ul>
+                    <li>Make sure Quire Desktop is your default handler</li>
+                    <li>Try closing browser tabs with Quire open</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>⚠️ Still having issues?</strong><br>
+                    Try <span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">Shift</span> + <span
+                        class="keyboard-key">R</span> for a force reload, or restart the app.
+                </div>
+            </section>
+
+            <section id="privacy" class="section">
+                <h2>🔒 Privacy &amp; Security</h2>
+
+                <ul>
+                    <li><strong>🔒 Secure OAuth</strong>: We never store your password</li>
+                    <li><strong>🚫 No data collection</strong>: Your tasks stay private</li>
+                    <li><strong>💻 Local processing</strong>: Notifications are generated on your device</li>
+                    <li><strong>📖 Transparent</strong>: Auditable behavior, no hidden tracking</li>
+                </ul>
+
+                <h3>System Requirements</h3>
+                <ul>
+                    <li><strong>Windows</strong>: Windows 10 or later</li>
+                    <li><strong>Internet</strong>: Required for syncing with Quire</li>
+                </ul>
+
+                <h3>Updates</h3>
+                <p>Quire Desktop automatically checks for updates and notifies you when a new version is available.
+                    Simply click the update notification to download and install.</p>
+            </section>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="links">
+                <a href="index.html">Home</a>
+                <a href="https://github.com/DmitryN71/Quire-Desktop/releases">Releases</a>
+                <a href="mailto:dmitry.novikov@mofii.shop">Support</a>
+            </div>
+            <p class="disclaimer">
+                Quire Desktop is an independent, unofficial client and is not affiliated with or endorsed by Quire Inc.
+                • © 2026 Dmitry Novikov. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Active-section highlight in the sticky TOC
+        var sections = document.querySelectorAll('.section');
+        var navLinks = document.querySelectorAll('.toc a');
+
+        function onScroll() {
+            var current = '';
+            sections.forEach(function (section) {
+                if (window.scrollY >= section.offsetTop - 160) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(function (link) {
+                link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+            });
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    </script>
+</body>
+
+</html>

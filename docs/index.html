@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Native desktop client for Quire.io — native notifications, morning digest, instant task navigation and offline-ready sync. Free for Windows 10/11.">
+    <meta name="theme-color" content="#0a0e14">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta property="og:title" content="Quire Desktop — Native Desktop App for Quire">
+    <meta property="og:description"
+        content="Stay focused and never miss a deadline. Native notifications, morning digest, and one-click task navigation for Quire.">
+    <meta property="og:type" content="website">
+    <title>Quire Desktop — Native Desktop App for Quire</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e14;
+            --bg-soft: #11161f;
+            --card: rgba(255, 255, 255, 0.035);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text: #e6edf3;
+            --text-dim: #9aa7b4;
+            --text-faint: #6b7785;
+            --green: #22c55e;
+            --green-bright: #4ade80;
+            --emerald: #10b981;
+            --radius: 18px;
+            --maxw: 1160px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Ambient gradient glows */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(60% 50% at 75% -5%, rgba(34, 197, 94, 0.16), transparent 60%),
+                radial-gradient(45% 45% at 10% 10%, rgba(16, 185, 129, 0.10), transparent 60%),
+                radial-gradient(55% 60% at 50% 110%, rgba(34, 197, 94, 0.08), transparent 60%);
+            pointer-events: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ---------- Header ---------- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: saturate(140%) blur(14px);
+            background: rgba(10, 14, 20, 0.6);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 68px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand .mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--green) 0%, var(--emerald) 100%);
+            display: grid;
+            place-items: center;
+            color: #052e16;
+            font-weight: 900;
+            font-size: 1.1rem;
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.35);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: color 0.18s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            font-weight: 600;
+            border-radius: 999px;
+            transition: transform 0.18s, box-shadow 0.18s, background 0.18s, border-color 0.18s;
+            cursor: pointer;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--green) 0%, var(--emerald) 100%);
+            color: #052e16;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.30);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 40px rgba(34, 197, 94, 0.45);
+        }
+
+        .btn-ghost {
+            background: var(--card);
+            border-color: var(--card-border);
+            color: var(--text);
+            padding: 12px 24px;
+            font-size: 0.95rem;
+        }
+
+        .btn-ghost:hover {
+            border-color: rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav .btn-primary {
+            padding: 9px 18px;
+            font-size: 0.88rem;
+        }
+
+        .nav-cta-wrap {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            text-align: center;
+            padding: 96px 24px 70px;
+            position: relative;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px;
+            border-radius: 999px;
+            background: rgba(34, 197, 94, 0.10);
+            border: 1px solid rgba(34, 197, 94, 0.28);
+            color: var(--green-bright);
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 28px;
+        }
+
+        .pill .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green-bright);
+            box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            animation: pulse 2.2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6); }
+            70% { box-shadow: 0 0 0 9px rgba(74, 222, 128, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.6rem, 6vw, 4.6rem);
+            font-weight: 900;
+            letter-spacing: -0.035em;
+            line-height: 1.04;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 .grad {
+            background: linear-gradient(115deg, var(--green-bright) 0%, var(--emerald) 55%, #2dd4bf 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p.sub {
+            font-size: clamp(1.05rem, 2vw, 1.3rem);
+            color: var(--text-dim);
+            max-width: 640px;
+            margin: 0 auto 40px;
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary.lg,
+        .btn-ghost.lg {
+            padding: 17px 36px;
+            font-size: 1.05rem;
+        }
+
+        .meta-row {
+            margin-top: 22px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            color: var(--text-faint);
+            font-size: 0.88rem;
+        }
+
+        .meta-row span {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .meta-row .sep {
+            opacity: 0.4;
+        }
+
+        /* ---------- App mockup ---------- */
+        .mockup {
+            max-width: 880px;
+            margin: 64px auto 0;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(180deg, #0e141d 0%, #0b1017 100%);
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(34, 197, 94, 0.06);
+            overflow: hidden;
+        }
+
+        .mockup .titlebar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 16px;
+            border-bottom: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .mockup .titlebar .dots {
+            display: flex;
+            gap: 7px;
+        }
+
+        .mockup .titlebar .dots i {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .dots i:nth-child(1) { background: #ff5f57; }
+        .dots i:nth-child(2) { background: #febc2e; }
+        .dots i:nth-child(3) { background: #28c840; }
+
+        .mockup .titlebar .tt {
+            margin-left: 10px;
+            color: var(--text-faint);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .mockup .body {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            min-height: 320px;
+        }
+
+        .mockup .side {
+            border-right: 1px solid var(--card-border);
+            padding: 18px 14px;
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .mockup .side .row {
+            height: 11px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.06);
+            margin-bottom: 14px;
+        }
+
+        .mockup .side .row.short { width: 60%; }
+        .mockup .side .row.accent { background: rgba(34, 197, 94, 0.30); width: 78%; }
+
+        .mockup .main {
+            padding: 22px 24px;
+            position: relative;
+        }
+
+        .mockup .main .line {
+            height: 13px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 16px;
+        }
+
+        .mockup .main .line.w1 { width: 45%; }
+        .mockup .main .line.w2 { width: 80%; }
+        .mockup .main .line.w3 { width: 65%; }
+        .mockup .main .line.w4 { width: 72%; }
+
+        .toast {
+            position: absolute;
+            right: 22px;
+            bottom: 22px;
+            width: 260px;
+            background: #12181f;
+            border: 1px solid rgba(34, 197, 94, 0.30);
+            border-radius: 12px;
+            padding: 13px 15px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+            display: flex;
+            gap: 11px;
+            align-items: flex-start;
+            animation: floatToast 4s ease-in-out infinite;
+        }
+
+        @keyframes floatToast {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .toast .ic {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--green), var(--emerald));
+            display: grid;
+            place-items: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .toast .tx strong {
+            display: block;
+            font-size: 0.82rem;
+            margin-bottom: 3px;
+        }
+
+        .toast .tx span {
+            font-size: 0.76rem;
+            color: var(--text-dim);
+        }
+
+        /* ---------- Sections ---------- */
+        section.block {
+            padding: 80px 0;
+        }
+
+        .section-head {
+            text-align: center;
+            max-width: 620px;
+            margin: 0 auto 54px;
+        }
+
+        .section-head .eyebrow {
+            color: var(--green-bright);
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-head h2 {
+            font-size: clamp(1.9rem, 3.5vw, 2.7rem);
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.12;
+        }
+
+        .section-head p {
+            color: var(--text-dim);
+            margin-top: 14px;
+            font-size: 1.05rem;
+        }
+
+        /* Features */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: transform 0.2s, border-color 0.2s, background 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(34, 197, 94, 0.35);
+            background: rgba(34, 197, 94, 0.04);
+        }
+
+        .card .emoji {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.22);
+            display: grid;
+            place-items: center;
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        .card p {
+            color: var(--text-dim);
+            font-size: 0.96rem;
+        }
+
+        /* What's New */
+        .whatsnew {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            padding: 44px;
+        }
+
+        .whatsnew .ver-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: var(--green-bright);
+            font-weight: 700;
+            font-size: 0.82rem;
+            padding: 6px 14px;
+            border-radius: 999px;
+            margin-bottom: 20px;
+        }
+
+        .whatsnew h2 {
+            font-size: clamp(1.6rem, 3vw, 2.1rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        .changelog {
+            list-style: none;
+            display: grid;
+            gap: 14px;
+        }
+
+        .changelog li {
+            display: flex;
+            gap: 13px;
+            align-items: flex-start;
+            color: var(--text-dim);
+            font-size: 1rem;
+        }
+
+        .changelog li .chk {
+            color: var(--green-bright);
+            flex-shrink: 0;
+            margin-top: 2px;
+            font-weight: 700;
+        }
+
+        .changelog li strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Install + Requirements */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .steps {
+            list-style: none;
+            counter-reset: step;
+            display: grid;
+            gap: 16px;
+        }
+
+        .steps li {
+            counter-increment: step;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .steps li::before {
+            content: counter(step);
+            flex-shrink: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: var(--green-bright);
+            font-weight: 700;
+            display: grid;
+            place-items: center;
+            font-size: 0.95rem;
+        }
+
+        .steps li span {
+            color: var(--text-dim);
+            padding-top: 4px;
+        }
+
+        .req-list {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .req-list li {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text-dim);
+            font-size: 0.96rem;
+        }
+
+        .req-list li .chk {
+            color: var(--green-bright);
+            font-weight: 700;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.10), rgba(16, 185, 129, 0.06));
+            border: 1px solid rgba(34, 197, 94, 0.22);
+            border-radius: 26px;
+            padding: 64px 32px;
+        }
+
+        .final-cta h2 {
+            font-size: clamp(1.9rem, 4vw, 2.8rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+        }
+
+        .final-cta p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding: 44px 0 56px;
+            margin-top: 40px;
+        }
+
+        .foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            color: var(--text-faint);
+            font-size: 0.9rem;
+        }
+
+        .foot a {
+            color: var(--text-dim);
+        }
+
+        .foot a:hover {
+            color: var(--green-bright);
+        }
+
+        .foot .disclaimer {
+            font-size: 0.82rem;
+            opacity: 0.8;
+        }
+
+        /* Reveal on scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.in {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 860px) {
+            .nav-links { display: none; }
+            .two-col { grid-template-columns: 1fr; }
+            .mockup .body { grid-template-columns: 1fr; }
+            .mockup .side { display: none; }
+            .whatsnew { padding: 30px 22px; }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="nav">
+                <div class="brand">
+                    <div class="mark">Q</div>
+                    <span>Quire Desktop</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#whatsnew">What's New</a>
+                    <a href="#install">Install</a>
+                    <a href="instructions.html">User Guide</a>
+                </div>
+                <div class="nav-cta-wrap">
+                    <a id="navDownload" href="#" class="btn btn-primary">Download</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="pill"><span class="dot"></span> <span id="heroVerPill">Version 3.8.7 — out now</span></div>
+            <h1>The native desktop home<br>for your <span class="grad">Quire</span> tasks</h1>
+            <p class="sub">Real-time notifications, a morning digest, and one-click jumps straight to the right task —
+                without ever hunting through browser tabs.</p>
+            <div class="cta-row">
+                <a id="heroDownload" href="#" class="btn btn-primary lg">⬇ Download for Windows</a>
+                <a href="instructions.html" class="btn btn-ghost lg">📖 User Guide</a>
+            </div>
+            <div class="meta-row">
+                <span>🪟 Windows 10 / 11</span><span class="sep">•</span>
+                <span>🆓 Free</span><span class="sep">•</span>
+                <span id="metaVersion">v3.8.7</span><span class="sep">•</span>
+                <span>🔒 OAuth — no data collection</span>
+            </div>
+
+            <!-- App mockup -->
+            <div class="mockup reveal">
+                <div class="titlebar">
+                    <div class="dots"><i></i><i></i><i></i></div>
+                    <span class="tt">Quire Desktop</span>
+                </div>
+                <div class="body">
+                    <div class="side">
+                        <div class="row accent"></div>
+                        <div class="row"></div>
+                        <div class="row short"></div>
+                        <div class="row"></div>
+                        <div class="row short"></div>
+                        <div class="row"></div>
+                    </div>
+                    <div class="main">
+                        <div class="line w2"></div>
+                        <div class="line w1"></div>
+                        <div class="line w4"></div>
+                        <div class="line w3"></div>
+                        <div class="line w2"></div>
+                        <div class="toast">
+                            <div class="ic">💬</div>
+                            <div class="tx">
+                                <strong>New comment on “Launch checklist”</strong>
+                                <span>Click to jump straight to it →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="block" id="features">
+        <div class="container">
+            <div class="section-head reveal">
+                <div class="eyebrow">Why Quire Desktop</div>
+                <h2>Everything you need, nothing in the way</h2>
+                <p>Built for people who live in Quire all day and want it to feel like a real native app.</p>
+            </div>
+            <div class="grid">
+                <div class="card reveal">
+                    <div class="emoji">🔔</div>
+                    <h3>Native notifications</h3>
+                    <p>Instant desktop alerts for assignments, comments, due dates and status changes — even when the
+                        window is hidden.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="emoji">☀️</div>
+                    <h3>Morning digest</h3>
+                    <p>Start each day with a single summary of everything due today, so you can prioritize before the
+                        noise begins.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="emoji">🎯</div>
+                    <h3>One-click navigation</h3>
+                    <p>Click a notification and land precisely on the task — or the exact comment that triggered it. No
+                        tab juggling.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="emoji">📶</div>
+                    <h3>Offline-ready sync</h3>
+                    <p>Keeps working when your connection drops and catches up automatically the moment you're back
+                        online.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="emoji">🔒</div>
+                    <h3>Privacy-first</h3>
+                    <p>Secure OAuth sign-in with zero data collection. Your tokens stay on your machine — nothing is
+                        harvested.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="emoji">⚡</div>
+                    <h3>System tray</h3>
+                    <p>Tuck Quire into the tray and keep it a keystroke away without cluttering your taskbar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What's New -->
+    <section class="block" id="whatsnew">
+        <div class="container">
+            <div class="whatsnew reveal">
+                <div class="ver-tag"><span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--green-bright);display:inline-block"></span>
+                    <span id="changelogVer">v3.8.7</span></div>
+                <h2>What's new in this release</h2>
+                <ul class="changelog" id="changelogList">
+                    <li><span class="chk">✓</span><span><strong>Updates straight from GitHub.</strong> The app now
+                        checks GitHub Releases for new versions — no server of ours in between, nothing that can
+                        expire or go offline.</span></li>
+                    <li><span class="chk">✓</span><span><strong>Notifications keep you in Today.</strong> Opening a
+                        task from a toast never bounces you into the project view any more, however slow the
+                        page is to render.</span></li>
+                    <li><span class="chk">✓</span><span><strong>Follow without the noise.</strong> A new switch
+                        silences tasks where you are only a follower — only what is assigned to you or created
+                        by you gets through.</span></li>
+                    <li><span class="chk">✓</span><span><strong>A morning digest you can act on.</strong> Clicking it
+                        opens the exact list of tasks it announced — grouped, timed, each one a link. The list
+                        stays open above the app so you can work straight through it.</span></li>
+                    <li><span class="chk">✓</span><span><strong>Your own view bar.</strong> Save any Quire view —
+                        including a My Tasks sublist — as a one-click button in the title bar, with an icon.
+                        Jump straight to it from anywhere, no matter which view you are browsing.</span></li>
+                    <li><span class="chk">✓</span><span><strong>A calmer title bar.</strong> The page title can be
+                        hidden in Settings, leaving the room to your saved views.</span></li>
+                    <li><span class="chk">✓</span><span><strong>Notification clicks stay put.</strong> Opening a
+                        comment from a notification no longer bounces you into the project view a few seconds
+                        later — you stay in Today, right where the comment is.</span></li>
+                    <li><span class="chk">✓</span><span><strong>"Only my tasks" honored again.</strong> Stale unfiltered
+                        webhook subscriptions from old versions are cleaned up automatically — no more toasts about
+                        tasks you're not part of.</span></li>
+                    <li><span class="chk">✓</span><span><strong>Windowed sync.</strong> The app now fetches only tasks
+                        that can actually notify — everything overdue plus the next 7 days. An order of magnitude
+                        less traffic, faster startup and refreshes.</span></li>
+                    <li><span class="chk">✓</span><span><strong>Subtasks finally sync.</strong> Dated subtasks were
+                        invisible to sync before — expect a one-time batch of overdue reminders right after
+                        updating, then the normal daily rhythm.</span></li>
+                    <li><span class="chk">✓</span><span><strong>Right-click Copy fixed for good.</strong> Selected text
+                        is captured the moment you right-click and written straight to the clipboard.</span></li>
+                    <li><span class="chk">✓</span><span><strong>Leaner under the hood.</strong> Server-side proxy fix
+                        (query parameters now reach the Quire API) and dead code removed.</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Install + Requirements -->
+    <section class="block" id="install">
+        <div class="container">
+            <div class="section-head reveal">
+                <div class="eyebrow">Get started</div>
+                <h2>Up and running in under a minute</h2>
+            </div>
+            <div class="two-col">
+                <ol class="steps reveal">
+                    <li><span>Click <strong>Download for Windows</strong> to grab the installer.</span></li>
+                    <li><span>Run the installer and follow the short setup wizard.</span></li>
+                    <li><span>Launch Quire Desktop and sign in with your Quire account via secure OAuth.</span></li>
+                    <li><span>Allow notifications when prompted — and you're done.</span></li>
+                </ol>
+                <ul class="req-list reveal">
+                    <li><span class="chk">✓</span> Windows 10 or Windows 11</li>
+                    <li><span class="chk">✓</span> Active internet connection</li>
+                    <li><span class="chk">✓</span> A Quire account (free or paid)</li>
+                    <li><span class="chk">✓</span> ~200 MB of free disk space</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="block">
+        <div class="container">
+            <div class="final-cta reveal">
+                <h2>Never miss a task again</h2>
+                <p>Free, native, and built for focus. Try Quire Desktop today.</p>
+                <div class="cta-row">
+                    <a id="ctaDownload" href="#" class="btn btn-primary lg">⬇ Download for Windows</a>
+                    <a href="instructions.html" class="btn btn-ghost lg">📖 Read the User Guide</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="foot">
+                <div class="brand" style="font-size:1rem">
+                    <div class="mark" style="width:28px;height:28px;font-size:0.9rem;border-radius:8px">Q</div>
+                    <span>Quire Desktop</span>
+                </div>
+                <div style="display:flex;gap:22px;flex-wrap:wrap;align-items:center">
+                    <a href="https://github.com/DmitryN71/Quire-Desktop/releases">Releases</a>
+                    <a href="instructions.html">User Guide</a>
+                    <a href="mailto:dmitry.novikov@mofii.shop">Support</a>
+                </div>
+            </div>
+            <p class="disclaimer" style="margin-top:22px">
+                Quire Desktop is an independent, unofficial client and is not affiliated with or endorsed by Quire Inc. •
+                © 2026 Dmitry Novikov. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // ---- Single source of truth (fallback). Auto-updated from GitHub Releases below. ----
+        var FALLBACK_VERSION = '4.2.5';
+        var FALLBACK_URL =
+            'https://github.com/DmitryN71/Quire-Desktop/releases/download/v4.2.5/Quire.Desktop.Setup.4.2.5.exe';
+
+        function applyVersion(version, url) {
+            var dlUrl = url || FALLBACK_URL;
+            ['navDownload', 'heroDownload', 'ctaDownload'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.setAttribute('href', dlUrl);
+            });
+            var v = version || FALLBACK_VERSION;
+            var pill = document.getElementById('heroVerPill');
+            if (pill) pill.textContent = 'Version ' + v + ' — out now';
+            var meta = document.getElementById('metaVersion');
+            if (meta) meta.textContent = 'v' + v;
+            var clv = document.getElementById('changelogVer');
+            if (clv) clv.textContent = 'v' + v;
+        }
+
+        // Apply fallback immediately so links always work.
+        applyVersion(FALLBACK_VERSION, FALLBACK_URL);
+
+        // Then ask GitHub for the latest release so the page never goes stale.
+        var REPO = 'DmitryN71/Quire-Desktop';
+        fetch('https://api.github.com/repos/' + REPO + '/releases/latest', {
+            cache: 'no-store', headers: { Accept: 'application/vnd.github+json' }
+        })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (rel) {
+                if (!rel) return;
+                var m = String(rel.tag_name || '').match(/(\d+)\.(\d+)\.(\d+)/);
+                if (!m) return;
+                var v = m[1] + '.' + m[2] + '.' + m[3];
+                var prefix = 'https://github.com/' + REPO + '/releases/download/';
+                var asset = (rel.assets || []).filter(function (a) { return /\.exe$/i.test(a.name || ''); })[0];
+                var url = asset && asset.browser_download_url;
+                if (!url || url.indexOf(prefix) !== 0) url = prefix + 'v' + v + '/Quire.Desktop.Setup.' + v + '.exe';
+                applyVersion(v, url);
+            })
+            .catch(function () { /* offline or rate-limited — fallback already applied */ });
+
+        // ---- Reveal-on-scroll ----
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                if (e.isIntersecting) {
+                    e.target.classList.add('in');
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+    </script>
+</body>
+
+</html>
