@@ -798,6 +798,9 @@
                     <span id="changelogVer">v3.8.7</span></div>
                 <h2>What's new in this release</h2>
                 <ul class="changelog" id="changelogList">
+                    <li><span class="chk">✓</span><span><strong>Reload works in every keyboard layout.</strong>
+                        With a non-Latin layout active, Ctrl+Shift+R used to reach Quire instead of the app — and
+                        Quire could read it as “complete this task”. The shortcuts now follow the physical key.</span></li>
                     <li><span class="chk">✓</span><span><strong>Updates straight from GitHub.</strong> The app now
                         checks GitHub Releases for new versions — no server of ours in between, nothing that can
                         expire or go offline.</span></li>
@@ -896,9 +899,9 @@
 
     <script>
         // ---- Single source of truth (fallback). Auto-updated from GitHub Releases below. ----
-        var FALLBACK_VERSION = '4.2.5';
+        var FALLBACK_VERSION = '4.2.6';
         var FALLBACK_URL =
-            'https://github.com/DmitryN71/Quire-Desktop/releases/download/v4.2.5/Quire.Desktop.Setup.4.2.5.exe';
+            'https://github.com/DmitryN71/Quire-Desktop/releases/download/v4.2.6/Quire.Desktop.Setup.4.2.6.exe';
 
         function applyVersion(version, url) {
             var dlUrl = url || FALLBACK_URL;
