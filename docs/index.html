@@ -798,6 +798,17 @@
                     <span id="changelogVer">v3.8.7</span></div>
                 <h2>What's new in this release</h2>
                 <ul class="changelog" id="changelogList">
+                    <li><span class="chk">✓</span><span><strong>Fluent main window, Today's tasks and Welcome.</strong>
+                        Matched to the Windows 11 Fluent Settings window: clean command-bar title bar, flat saved-view
+                        tabs with an inset accent highlight and native font size, plus a dedicated Today's tasks button.
+                        Clicking the connection indicator now opens Settings straight on the Account page.</span></li>
+                    <li><span class="chk">✓</span><span><strong>No more overdue notification storms.</strong> Starting
+                        the app after a few days away no longer fires tens of overdue notifications in a row — overdue
+                        tasks triggered on the same check are grouped into a single “N tasks overdue” toast.</span></li>
+                    <li><span class="chk">✓</span><span><strong>Overdue section in Today's tasks.</strong> Clicking the
+                        grouped overdue toast (or the Today's tasks button) opens the floating list with an Overdue
+                        section at the top showing relative age badges (1d ago, 3d ago), followed by Due today and
+                        Starting today.</span></li>
                     <li><span class="chk">✓</span><span><strong>Quire looks like Quire again.</strong> The app no
                         longer restyles the Quire page: no layout or color changes, no glitches. Your display
                         font is the one choice that stays.</span></li>
@@ -912,9 +923,9 @@
 
     <script>
         // ---- Single source of truth (fallback). Auto-updated from GitHub Releases below. ----
-        var FALLBACK_VERSION = '4.4.0';
+        var FALLBACK_VERSION = '4.4.1';
         var FALLBACK_URL =
-            'https://github.com/DmitryN71/Quire-Desktop/releases/download/v4.4.0/Quire.Desktop.Setup.4.4.0.exe';
+            'https://github.com/DmitryN71/Quire-Desktop/releases/download/v4.4.1/Quire.Desktop.Setup.4.4.1.exe';
 
         function applyVersion(version, url) {
             var dlUrl = url || FALLBACK_URL;
